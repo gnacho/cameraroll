@@ -1,7 +1,7 @@
 # CameraRoll
 
-A native Google Photos clone for Android, written in Kotlin with Jetpack
-Compose. No Google Cloud involved: backups and sync go to your own Nextcloud
+A native, self-hosted photo gallery for Android, written in Kotlin with
+Jetpack Compose. No cloud lock-in: backups and sync go to your own Nextcloud
 or OpenCloud server over WebDAV.
 
 ## Features
@@ -71,7 +71,7 @@ app/src/main/java/app/cameraroll/
 ## Privacy
 
 Files live in the app's internal storage and, if you configure it, on your
-server. There are no calls to Google services.
+server. The app makes no calls to third-party services.
 
 ## License
 

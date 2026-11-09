@@ -3,13 +3,20 @@
     android:height="108dp"
     android:viewportWidth="96"
     android:viewportHeight="96">
-    <!-- molinillo de 8 pétalos -->
-    <path android:fillColor="#EA4335" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z"/>
-    <path android:fillColor="#FBBC04" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="45" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#34A853" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="90" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#4285F4" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="135" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#EA4335" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="180" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#FBBC04" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="225" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#34A853" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="270" android:pivotX="48" android:pivotY="48"/>
-    <path android:fillColor="#4285F4" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="315" android:pivotX="48" android:pivotY="48"/>
+    <!-- film strip body -->
+    <path android:fillColor="#FFFFFF" android:pathData="M25,36 h46 a5,5 0 0 1 5,5 v14 a5,5 0 0 1 -5,5 h-46 a5,5 0 0 1 -5,-5 v-14 a5,5 0 0 1 5,-5 Z"/>
+    <!-- sprocket holes: top row -->
+    <path android:fillColor="#0F766E" android:pathData="M26,33 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M34,33 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M42,33 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M50,33 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M58,33 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M66,33 h5 v6 h-5 Z"/>
+    <!-- sprocket holes: bottom row -->
+    <path android:fillColor="#0F766E" android:pathData="M26,57 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M34,57 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M42,57 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M50,57 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M58,57 h5 v6 h-5 Z"/>
+    <path android:fillColor="#0F766E" android:pathData="M66,57 h5 v6 h-5 Z"/>
 </vector>
