@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CameraRoll</string>
+    <string name="widget_memories_desc">Tus recuerdos de hoy en años anteriores</string>
+    <string name="widget_photo_desc">Una foto destacada de tu biblioteca</string>
+</resources>

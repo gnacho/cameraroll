@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- molinillo de 8 pétalos -->
+    <path android:fillColor="#EA4335" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z"/>
+    <path android:fillColor="#FBBC04" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="45" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#34A853" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="90" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#4285F4" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="135" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#EA4335" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="180" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#FBBC04" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="225" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#34A853" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="270" android:pivotX="48" android:pivotY="48"/>
+    <path android:fillColor="#4285F4" android:pathData="M48,48 L48,2 A46,46 0 0,1 80.5,15.5 Z" android:rotation="315" android:pivotX="48" android:pivotY="48"/>
+</vector>
