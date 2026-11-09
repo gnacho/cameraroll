@@ -21,7 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.cameraroll.R
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.EmptyState
 import app.cameraroll.ui.components.PhotoTimelineGrid
@@ -45,7 +47,7 @@ fun SearchScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                     TextField(
                         value = query,
                         onValueChange = { query = it },
-                        placeholder = { Text("Busca en tus fotos") },
+                        placeholder = { Text(stringResource(R.string.search_placeholder)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -58,20 +60,20 @@ fun SearchScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                 FilterChip(
                     selected = kind == null,
                     onClick = { kind = null },
-                    label = { Text("Todo") },
+                    label = { Text(stringResource(R.string.filter_all)) },
                     modifier = Modifier.padding(end = 8.dp),
                 )
                 FilterChip(
                     selected = kind == "image",
                     onClick = { kind = "image" },
-                    label = { Text("Fotos") },
+                    label = { Text(stringResource(R.string.filter_photos)) },
                     leadingIcon = { Icon(Icons.Default.Image, contentDescription = null) },
                     modifier = Modifier.padding(end = 8.dp),
                 )
                 FilterChip(
                     selected = kind == "video",
                     onClick = { kind = "video" },
-                    label = { Text("Vídeos") },
+                    label = { Text(stringResource(R.string.filter_videos)) },
                     leadingIcon = { Icon(Icons.Default.VideoLibrary, contentDescription = null) },
                 )
             }
@@ -83,8 +85,8 @@ fun SearchScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                             tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     },
-                    title = if (query.isBlank()) "Busca por nombre de archivo" else "Sin resultados",
-                    body = if (query.isBlank()) "Escribe para buscar." else "Nada coincide con «$query».",
+                    title = if (query.isBlank()) stringResource(R.string.search_empty_title) else stringResource(R.string.search_no_results_title),
+                    body = if (query.isBlank()) stringResource(R.string.search_empty_body) else stringResource(R.string.search_no_results_body, query),
                 )
             } else {
                 PhotoTimelineGrid(

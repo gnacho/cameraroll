@@ -15,6 +15,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import app.cameraroll.R
 import app.cameraroll.data.CloudSettings
 import java.util.concurrent.TimeUnit
 
@@ -34,13 +35,13 @@ class SyncWorker(
         val result = SyncEngine(applicationContext).sync()
 
         applicationContext.getSystemService(NotificationManager::class.java)
-            ?.notify(42, syncNotification("Sincronización completada", result.summary).build())
-        return Result.success(workDataOf("summary" to result.summary))
+            ?.notify(42, syncNotification(applicationContext.getString(R.string.sync_notification_completed), result.summary(applicationContext)).build())
+        return Result.success(workDataOf("summary" to result.summary(applicationContext)))
     }
 
     private fun createForegroundInfo(): ForegroundInfo {
         ensureChannel()
-        val notification = syncNotification("CameraRoll", "Sincronizando con tu nube…").build()
+        val notification = syncNotification(applicationContext.getString(R.string.app_name), applicationContext.getString(R.string.sync_notification_syncing)).build()
         return if (Build.VERSION.SDK_INT >= 29) {
             ForegroundInfo(41, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
@@ -59,7 +60,7 @@ class SyncWorker(
         if (Build.VERSION.SDK_INT >= 26) {
             val manager = applicationContext.getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(
-                NotificationChannel(CHANNEL_ID, "Sincronización", NotificationManager.IMPORTANCE_LOW),
+                NotificationChannel(CHANNEL_ID, applicationContext.getString(R.string.sync_channel_name), NotificationManager.IMPORTANCE_LOW),
             )
         }
     }

@@ -33,8 +33,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import app.cameraroll.R
 import app.cameraroll.ui.PhotosViewModel
 import java.io.File
 
@@ -51,14 +54,14 @@ fun AlbumPickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Añadir a un álbum") },
+        title = { Text(stringResource(R.string.action_add_to_an_album)) },
         text = {
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
                         value = newName,
                         onValueChange = { newName = it },
-                        placeholder = { Text("Álbum nuevo…") },
+                        placeholder = { Text(stringResource(R.string.new_album_placeholder)) },
                         singleLine = true,
                         modifier = Modifier.weight(1f),
                     )
@@ -72,7 +75,7 @@ fun AlbumPickerDialog(
                             }
                         },
                         enabled = newName.isNotBlank(),
-                    ) { Icon(Icons.Default.Add, contentDescription = "Crear") }
+                    ) { Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create)) }
                 }
                 Spacer(Modifier.height(8.dp))
                 LazyColumn(modifier = Modifier.height(260.dp)) {
@@ -99,7 +102,7 @@ fun AlbumPickerDialog(
                             Column {
                                 Text(a.album.name, style = MaterialTheme.typography.bodyLarge)
                                 Text(
-                                    "${a.photoCount} elementos",
+                                    pluralStringResource(R.plurals.album_item_count, a.photoCount, a.photoCount),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -110,7 +113,7 @@ fun AlbumPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }

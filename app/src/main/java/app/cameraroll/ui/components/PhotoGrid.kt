@@ -33,10 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import app.cameraroll.R
 import app.cameraroll.data.db.PhotoEntity
+import android.content.res.Resources
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -45,14 +50,15 @@ import java.util.Locale
 
 data class DayGroup(val key: String, val label: String, val photos: List<PhotoEntity>)
 
-fun groupByDay(photos: List<PhotoEntity>): List<DayGroup> {
+fun groupByDay(photos: List<PhotoEntity>, resources: Resources): List<DayGroup> {
     val now = Calendar.getInstance()
     val today = now.get(Calendar.DAY_OF_YEAR) to now.get(Calendar.YEAR)
     now.add(Calendar.DAY_OF_YEAR, -1)
     val yesterday = now.get(Calendar.DAY_OF_YEAR) to now.get(Calendar.YEAR)
 
-    val dayFmt = SimpleDateFormat("d 'de' MMMM", Locale("es"))
-    val yearFmt = SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es"))
+    val locale = Locale.getDefault()
+    val dayFmt = SimpleDateFormat(resources.getString(R.string.date_day_month), locale)
+    val yearFmt = SimpleDateFormat(resources.getString(R.string.date_full), locale)
 
     return photos.groupBy { p ->
         Calendar.getInstance().apply { timeInMillis = p.takenAt }
@@ -60,8 +66,8 @@ fun groupByDay(photos: List<PhotoEntity>): List<DayGroup> {
     }.toSortedMap(compareByDescending { (d, y) -> y * 1000 + d })
         .map { (day, items) ->
             val label = when (day) {
-                today -> "Hoy"
-                yesterday -> "Ayer"
+                today -> resources.getString(R.string.day_today)
+                yesterday -> resources.getString(R.string.day_yesterday)
                 else -> {
                     val date = Date(items.first().takenAt)
                     if (day.second == Calendar.getInstance().get(Calendar.YEAR)) dayFmt.format(date)
@@ -92,7 +98,8 @@ fun PhotoTimelineGrid(
     modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
 ) {
-    val groups = remember(photos) { groupByDay(photos) }
+    val resources = LocalContext.current.resources
+    val groups = remember(photos) { groupByDay(photos, resources) }
     val gridItems = remember(groups) {
         buildList {
             for (g in groups) {
@@ -251,10 +258,10 @@ fun SelectionTopBar(
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
         ) {
             androidx.compose.material3.IconButton(onClick = onClear) {
-                Icon(Icons.Default.Check, contentDescription = "Cancelar selección")
+                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_cancel_selection))
             }
             Text(
-                "$count seleccionados",
+                pluralStringResource(R.plurals.selected_count, count, count),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = 8.dp),
             )

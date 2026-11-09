@@ -39,8 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import app.cameraroll.R
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.EmptyState
 import app.cameraroll.ui.components.PhotoTimelineGrid
@@ -60,10 +63,10 @@ fun AlbumsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Álbumes") },
+                title = { Text(stringResource(R.string.albums_title)) },
                 actions = {
                     IconButton(onClick = { creating = true }) {
-                        Icon(Icons.Default.Add, contentDescription = "Crear álbum")
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create_album))
                     }
                 },
             )
@@ -77,8 +80,8 @@ fun AlbumsScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
-                title = "Sin álbumes",
-                body = "Crea álbumes para organizar tus fotos.",
+                title = stringResource(R.string.albums_empty_title),
+                body = stringResource(R.string.albums_empty_body),
             )
         } else {
             LazyVerticalGrid(
@@ -109,7 +112,7 @@ fun AlbumsScreen(
                             modifier = Modifier.padding(top = 8.dp),
                         )
                         Text(
-                            "${a.photoCount} elementos",
+                            pluralStringResource(R.plurals.album_item_count, a.photoCount, a.photoCount),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -122,12 +125,12 @@ fun AlbumsScreen(
     if (creating) {
         AlertDialog(
             onDismissRequest = { creating = false },
-            title = { Text("Álbum nuevo") },
+            title = { Text(stringResource(R.string.new_album_title)) },
             text = {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    placeholder = { Text("Nombre del álbum") },
+                    placeholder = { Text(stringResource(R.string.new_album_name_placeholder)) },
                     singleLine = true,
                 )
             },
@@ -142,9 +145,9 @@ fun AlbumsScreen(
                         }
                     },
                     enabled = name.isNotBlank(),
-                ) { Text("Crear") }
+                ) { Text(stringResource(R.string.action_create)) }
             },
-            dismissButton = { TextButton(onClick = { creating = false }) { Text("Cancelar") } },
+            dismissButton = { TextButton(onClick = { creating = false }) { Text(stringResource(R.string.action_cancel)) } },
         )
     }
 }
@@ -171,29 +174,29 @@ fun AlbumDetailScreen(
                 SelectionTopBar(count = selected.size, onClear = { selected = emptySet() }) {
                     IconButton(onClick = {
                         vm.removeFromAlbum(albumId, selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.Close, contentDescription = "Quitar del álbum") }
+                    }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_remove_from_album)) }
                     IconButton(onClick = {
                         vm.trash(selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.Delete, contentDescription = "Papelera") }
+                    }) { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_trash)) }
                 }
             } else {
                 TopAppBar(
-                    title = { Text(album?.name ?: "Álbum") },
+                    title = { Text(album?.name ?: stringResource(R.string.album_default_title)) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
                         }
                     },
                     actions = {
                         IconButton(onClick = {
                             newName = album?.name ?: ""
                             renaming = true
-                        }) { Icon(Icons.Default.Edit, contentDescription = "Renombrar") }
+                        }) { Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.action_rename)) }
                         IconButton(onClick = { confirmDelete = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Eliminar álbum")
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_delete_album))
                         }
                         IconButton(onClick = onAddPhotos) {
-                            Icon(Icons.Default.Add, contentDescription = "Añadir fotos")
+                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add_photos))
                         }
                     },
                 )
@@ -208,8 +211,8 @@ fun AlbumDetailScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
-                title = "Álbum vacío",
-                body = "Toca + para añadir fotos de tu biblioteca.",
+                title = stringResource(R.string.album_empty_title),
+                body = stringResource(R.string.album_empty_body),
             )
         } else {
             PhotoTimelineGrid(
@@ -232,7 +235,7 @@ fun AlbumDetailScreen(
     if (renaming) {
         AlertDialog(
             onDismissRequest = { renaming = false },
-            title = { Text("Renombrar álbum") },
+            title = { Text(stringResource(R.string.rename_album_title)) },
             text = {
                 OutlinedTextField(value = newName, onValueChange = { newName = it }, singleLine = true)
             },
@@ -241,25 +244,25 @@ fun AlbumDetailScreen(
                     val n = newName.trim()
                     if (n.isNotEmpty()) vm.renameAlbum(albumId, n)
                     renaming = false
-                }) { Text("Guardar") }
+                }) { Text(stringResource(R.string.action_save)) }
             },
-            dismissButton = { TextButton(onClick = { renaming = false }) { Text("Cancelar") } },
+            dismissButton = { TextButton(onClick = { renaming = false }) { Text(stringResource(R.string.action_cancel)) } },
         )
     }
 
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("¿Eliminar «${album?.name}»?") },
-            text = { Text("Las fotos seguirán en tu biblioteca.") },
+            title = { Text(stringResource(R.string.delete_album_title, album?.name.orEmpty())) },
+            text = { Text(stringResource(R.string.delete_album_body)) },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
                     album?.let { vm.deleteAlbum(it) }
                     onBack()
-                }) { Text("Eliminar", color = MaterialTheme.colorScheme.error) }
+                }) { Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error) }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancelar") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) } },
         )
     }
 }

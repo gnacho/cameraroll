@@ -52,9 +52,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import app.cameraroll.R
 import app.cameraroll.data.db.PhotoEntity
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.formatDuration
@@ -76,7 +78,7 @@ fun ViewerScreen(
     if (photos.isEmpty()) {
         Box(Modifier.fillMaxSize().background(Color.Black)) {
             IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding()) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back), tint = Color.White)
             }
         }
         return
@@ -126,7 +128,7 @@ fun ViewerScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back), tint = Color.White)
                     }
                     Column(Modifier.weight(1f).padding(start = 4.dp)) {
                         Text(
@@ -136,7 +138,7 @@ fun ViewerScreen(
                             maxLines = 1,
                         )
                         Text(
-                            SimpleDateFormat("d MMM yyyy, HH:mm", Locale("es"))
+                            SimpleDateFormat(stringResource(R.string.date_viewer), Locale.getDefault())
                                 .format(Date(current.takenAt)),
                             color = Color.White.copy(alpha = 0.7f),
                             style = MaterialTheme.typography.labelSmall,
@@ -146,34 +148,34 @@ fun ViewerScreen(
                         IconButton(onClick = { vm.setFavorite(listOf(current.id), !current.isFavorite) }) {
                             Icon(
                                 if (current.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = "Favorito",
+                                contentDescription = stringResource(R.string.action_favorite),
                                 tint = if (current.isFavorite) Color(0xFFFF5252) else Color.White,
                             )
                         }
                         IconButton(onClick = { onShare(listOf(current)) }) {
-                            Icon(Icons.Default.Share, contentDescription = "Compartir", tint = Color.White)
+                            Icon(Icons.Default.Share, contentDescription = stringResource(R.string.action_share), tint = Color.White)
                         }
                         IconButton(onClick = {
                             vm.trash(listOf(current.id))
-                            Toast.makeText(context, "Movida a la papelera", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.toast_moved_to_trash), Toast.LENGTH_SHORT).show()
                             if (photos.size <= 1) onBack()
                         }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Papelera", tint = Color.White)
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_trash), tint = Color.White)
                         }
                     } else {
                         IconButton(onClick = {
                             vm.restore(listOf(current.id))
-                            Toast.makeText(context, "Restaurada", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.toast_restored), Toast.LENGTH_SHORT).show()
                             onBack()
                         }) {
-                            Icon(Icons.Default.Restore, contentDescription = "Restaurar", tint = Color.White)
+                            Icon(Icons.Default.Restore, contentDescription = stringResource(R.string.action_restore), tint = Color.White)
                         }
                         IconButton(onClick = { confirmDelete = true }) {
-                            Icon(Icons.Default.DeleteForever, contentDescription = "Eliminar", tint = Color.White)
+                            Icon(Icons.Default.DeleteForever, contentDescription = stringResource(R.string.action_delete), tint = Color.White)
                         }
                     }
                     IconButton(onClick = { showInfo = true }) {
-                        Icon(Icons.Default.Info, contentDescription = "Información", tint = Color.White)
+                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.action_info), tint = Color.White)
                     }
                 }
             }
@@ -186,22 +188,22 @@ fun ViewerScreen(
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
-                    Text("Información", style = MaterialTheme.typography.titleMedium)
-                    InfoRow("Nombre", current.filename)
+                    Text(stringResource(R.string.viewer_info_title), style = MaterialTheme.typography.titleMedium)
+                    InfoRow(stringResource(R.string.info_name), current.filename)
                     InfoRow(
-                        "Fecha",
-                        SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy, HH:mm", Locale("es"))
+                        stringResource(R.string.info_date),
+                        SimpleDateFormat(stringResource(R.string.date_info_full), Locale.getDefault())
                             .format(Date(current.takenAt)),
                     )
-                    InfoRow("Tamaño", formatBytes(current.size))
-                    if (current.width > 0) InfoRow("Dimensiones", "${current.width} × ${current.height}")
-                    current.durationSec?.let { InfoRow("Duración", formatDuration(it)) }
-                    InfoRow("Tipo", current.mime)
+                    InfoRow(stringResource(R.string.info_size), formatBytes(current.size))
+                    if (current.width > 0) InfoRow(stringResource(R.string.info_dimensions), "${current.width} × ${current.height}")
+                    current.durationSec?.let { InfoRow(stringResource(R.string.info_duration), formatDuration(it)) }
+                    InfoRow(stringResource(R.string.info_type), current.mime)
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text("Copia en tu nube", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.info_cloud_copy), color = MaterialTheme.colorScheme.onSurfaceVariant)
                         if (current.ncPath != null) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
@@ -210,10 +212,10 @@ fun ViewerScreen(
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(end = 4.dp),
                                 )
-                                Text("Sincronizada")
+                                Text(stringResource(R.string.info_synced))
                             }
                         } else {
-                            Text("No")
+                            Text(stringResource(R.string.info_no))
                         }
                     }
                 }
@@ -223,17 +225,17 @@ fun ViewerScreen(
         if (confirmDelete) {
             AlertDialog(
                 onDismissRequest = { confirmDelete = false },
-                title = { Text("¿Eliminar definitivamente?") },
-                text = { Text("Se borrará para siempre de la biblioteca y de tu nube.") },
+                title = { Text(stringResource(R.string.delete_forever_title)) },
+                text = { Text(stringResource(R.string.delete_forever_body)) },
                 confirmButton = {
                     TextButton(onClick = {
                         confirmDelete = false
                         vm.deleteForever(listOf(current.id))
                         onBack()
-                    }) { Text("Eliminar", color = MaterialTheme.colorScheme.error) }
+                    }) { Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { confirmDelete = false }) { Text("Cancelar") }
+                    TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) }
                 },
             )
         }

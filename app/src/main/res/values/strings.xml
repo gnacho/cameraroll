@@ -3,4 +3,180 @@
     <string name="app_name">CameraRoll</string>
     <string name="widget_memories_desc">Tus recuerdos de hoy en años anteriores</string>
     <string name="widget_photo_desc">Una foto destacada de tu biblioteca</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_photos">Fotos</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_albums">Álbumes</string>
+    <string name="nav_favorites">Favoritos</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Actions -->
+    <string name="action_back">Volver</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_create">Crear</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_rename">Renombrar</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="action_favorite">Favorito</string>
+    <string name="action_remove_favorite">Quitar favorito</string>
+    <string name="action_trash">Papelera</string>
+    <string name="action_empty">Vaciar</string>
+    <string name="action_add_photos">Añadir fotos</string>
+    <string name="action_add_to_album">Añadir a álbum</string>
+    <string name="action_add_to_an_album">Añadir a un álbum</string>
+    <string name="action_remove_from_album">Quitar del álbum</string>
+    <string name="action_create_album">Crear álbum</string>
+    <string name="action_delete_album">Eliminar álbum</string>
+    <string name="action_empty_trash">Vaciar papelera</string>
+    <string name="action_info">Información</string>
+    <string name="action_cancel_selection">Cancelar selección</string>
+    <string name="action_cloud_status">Estado de la nube</string>
+    <string name="share_photos_title">Compartir fotos</string>
+
+    <!-- Timeline / day grouping -->
+    <string name="day_today">Hoy</string>
+    <string name="day_yesterday">Ayer</string>
+    <string name="date_day_month">d \'de\' MMMM</string>
+    <string name="date_full">d \'de\' MMMM \'de\' yyyy</string>
+
+    <!-- Photos screen -->
+    <string name="photos_empty_title">Tu biblioteca está vacía</string>
+    <string name="photos_empty_body">Pulsa + para importar fotos y vídeos de tu dispositivo.</string>
+    <plurals name="memory_years_ago">
+        <item quantity="one">Hace 1 año</item>
+        <item quantity="other">Hace %d años</item>
+    </plurals>
+
+    <!-- Grid -->
+    <plurals name="selected_count">
+        <item quantity="one">%d seleccionado</item>
+        <item quantity="other">%d seleccionados</item>
+    </plurals>
+
+    <!-- Viewer -->
+    <string name="viewer_info_title">Información</string>
+    <string name="info_name">Nombre</string>
+    <string name="info_date">Fecha</string>
+    <string name="info_size">Tamaño</string>
+    <string name="info_dimensions">Dimensiones</string>
+    <string name="info_duration">Duración</string>
+    <string name="info_type">Tipo</string>
+    <string name="info_cloud_copy">Copia en tu nube</string>
+    <string name="info_synced">Sincronizada</string>
+    <string name="info_no">No</string>
+    <string name="toast_moved_to_trash">Movida a la papelera</string>
+    <string name="toast_restored">Restaurada</string>
+    <string name="delete_forever_title">¿Eliminar definitivamente?</string>
+    <string name="delete_forever_body">Se borrará para siempre de la biblioteca y de tu nube.</string>
+    <string name="date_viewer">d MMM yyyy, HH:mm</string>
+    <string name="date_info_full">EEEE d \'de\' MMMM \'de\' yyyy, HH:mm</string>
+
+    <!-- Albums -->
+    <string name="albums_title">Álbumes</string>
+    <string name="albums_empty_title">Sin álbumes</string>
+    <string name="albums_empty_body">Crea álbumes para organizar tus fotos.</string>
+    <string name="new_album_title">Álbum nuevo</string>
+    <string name="new_album_placeholder">Álbum nuevo…</string>
+    <string name="new_album_name_placeholder">Nombre del álbum</string>
+    <string name="album_default_title">Álbum</string>
+    <string name="album_empty_title">Álbum vacío</string>
+    <string name="album_empty_body">Toca + para añadir fotos de tu biblioteca.</string>
+    <string name="rename_album_title">Renombrar álbum</string>
+    <string name="delete_album_title">¿Eliminar \"%s\"?</string>
+    <string name="delete_album_body">Las fotos seguirán en tu biblioteca.</string>
+    <plurals name="album_item_count">
+        <item quantity="one">%d elemento</item>
+        <item quantity="other">%d elementos</item>
+    </plurals>
+
+    <!-- Favorites -->
+    <string name="favorites_title">Favoritos</string>
+    <string name="favorites_empty_title">Sin favoritos</string>
+    <string name="favorites_empty_body">Marca fotos con el corazón para verlas aquí.</string>
+
+    <!-- Trash -->
+    <string name="trash_title">Papelera</string>
+    <string name="trash_empty_title">Papelera vacía</string>
+    <string name="trash_empty_body">Los elementos borrados se eliminan definitivamente a los 30 días.</string>
+    <string name="empty_trash_title">¿Vaciar la papelera?</string>
+    <plurals name="empty_trash_body">
+        <item quantity="one">Se eliminará definitivamente %d elemento.</item>
+        <item quantity="other">Se eliminarán definitivamente %d elementos.</item>
+    </plurals>
+
+    <!-- Search -->
+    <string name="search_placeholder">Busca en tus fotos</string>
+    <string name="filter_all">Todo</string>
+    <string name="filter_photos">Fotos</string>
+    <string name="filter_videos">Vídeos</string>
+    <string name="search_empty_title">Busca por nombre de archivo</string>
+    <string name="search_no_results_title">Sin resultados</string>
+    <string name="search_empty_body">Escribe para buscar.</string>
+    <string name="search_no_results_body">Nada coincide con \"%s\".</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="cloud_section_title">Tu nube: Nextcloud / OpenCloud</string>
+    <string name="cloud_section_body">Sin nubes ajenas: tus fotos se guardan también en tu propio servidor por WebDAV.</string>
+    <string name="provider_nextcloud">Nextcloud</string>
+    <string name="provider_opencloud">OpenCloud</string>
+    <string name="field_server_url">URL del servidor</string>
+    <string name="field_server_url_placeholder">https://nube.ejemplo.com</string>
+    <string name="field_username">Usuario</string>
+    <string name="field_password">Contraseña de aplicación</string>
+    <string name="field_remote_folder">Carpeta remota</string>
+    <string name="field_remote_folder_placeholder">/Fotos</string>
+    <string name="auto_upload_label">Subir automáticamente lo nuevo</string>
+    <string name="action_test">Probar</string>
+    <string name="action_unlink">Desvincular</string>
+    <string name="toast_settings_saved">Configuración guardada</string>
+    <string name="test_ok">✓ Conexión correcta</string>
+    <string name="test_fail">✗ %s</string>
+    <string name="row_provider">Proveedor</string>
+    <string name="row_server">Servidor</string>
+    <string name="row_folder">Carpeta</string>
+    <string name="row_last_sync">Última sync</string>
+    <string name="last_sync_never">Nunca</string>
+    <string name="row_result">Resultado</string>
+    <string name="action_sync_now">Sincronizar ahora</string>
+    <string name="sync_summary">Subidas: %1$d · Importadas: %2$d</string>
+    <string name="sync_short_summary">↑%1$d ↓%2$d</string>
+    <string name="sync_errors"> · %d errores</string>
+    <string name="storage_section_title">Almacenamiento</string>
+    <string name="storage_stats">%1$d elementos · %2$s</string>
+    <string name="storage_cloud_stats">%1$d copiados en tu nube · %2$d en la papelera</string>
+    <string name="crash_section_title">Informe de fallos</string>
+    <string name="crash_body">La última vez la app se cerró por un error. Cópiamelo y lo arreglo.</string>
+    <string name="crash_copy">Copiar informe</string>
+    <string name="crash_dismiss">Descartar</string>
+    <string name="about_body">Tu galería, en tu nube: cronología, recuerdos, álbumes, favoritos y papelera, con copia de seguridad en tu Nextcloud u OpenCloud.</string>
+
+    <!-- Widgets -->
+    <string name="widget_memories_title">Recuerdos</string>
+    <string name="widget_memories_empty">Añade fotos para revivir tus recuerdos</string>
+
+    <!-- Crash report -->
+    <string name="crash_report_title">CameraRoll - informe de fallo</string>
+    <string name="crash_report_device">Android %1$s (API %2$d) · %3$s</string>
+    <string name="crash_report_thread">Hilo: %s</string>
+    <string name="toast_report_copied">Informe copiado al portapapeles</string>
+
+    <!-- Sync notifications -->
+    <string name="sync_channel_name">Sincronización</string>
+    <string name="sync_notification_completed">Sincronización completada</string>
+    <string name="sync_notification_syncing">Sincronizando con tu nube…</string>
+
+    <!-- WebDAV errors -->
+    <string name="dav_error_http">%1$s falló (HTTP %2$d)</string>
+    <string name="dav_error_mkcol">MKCOL %1$s falló (HTTP %2$d)</string>
+    <string name="dav_error_bad_credentials">Credenciales incorrectas (HTTP %d)</string>
+    <string name="dav_error_server">El servidor respondió HTTP %d</string>
+    <string name="dav_error_empty_download">Respuesta vacía al descargar %s</string>
+    <string name="dav_op_upload">Subida de %s</string>
+    <string name="dav_op_download">Descarga de %s</string>
+    <string name="dav_op_delete">Borrado de %s</string>
 </resources>

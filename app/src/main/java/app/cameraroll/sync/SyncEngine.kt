@@ -1,6 +1,7 @@
 package app.cameraroll.sync
 
 import android.content.Context
+import app.cameraroll.R
 import app.cameraroll.data.CloudConfig
 import app.cameraroll.data.CloudSettings
 import app.cameraroll.data.PhotoRepository
@@ -17,8 +18,9 @@ data class SyncResult(
     val pulled: Int = 0,
     val errors: List<String> = emptyList(),
 ) {
-    val summary: String
-        get() = "↑$pushed ↓$pulled" + if (errors.isNotEmpty()) " · ${errors.size} errores" else ""
+    fun summary(context: Context): String =
+        context.getString(R.string.sync_short_summary, pushed, pulled) +
+            if (errors.isNotEmpty()) context.getString(R.string.sync_errors, errors.size) else ""
 }
 
 /**
@@ -37,7 +39,7 @@ class SyncEngine(private val context: Context) {
         val config = CloudSettings.get(context)
         if (!config.isConfigured) return@withContext SyncResult()
 
-        val dav = DavClient(config)
+        val dav = DavClient(config, context)
         dav.mkdirs(config.basePath)
         val dao = repo.db.photoDao()
 
@@ -76,7 +78,7 @@ class SyncEngine(private val context: Context) {
         }
 
         val result = SyncResult(pushed, pulled, errors)
-        CloudSettings.recordSync(context, result.summary)
+        CloudSettings.recordSync(context, result.summary(context))
         result
     }
 
@@ -163,14 +165,14 @@ class SyncEngine(private val context: Context) {
         val config = CloudSettings.get(context)
         if (!config.isConfigured) return@withContext
         try {
-            DavClient(config).delete(ncPath)
+            DavClient(config, context).delete(ncPath)
         } catch (_: Exception) {
         }
     }
 
     suspend fun testConnection(config: CloudConfig): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val dav = DavClient(config)
+            val dav = DavClient(config, context)
             dav.ping()
             dav.mkdirs(config.basePath)
             Result.success(Unit)

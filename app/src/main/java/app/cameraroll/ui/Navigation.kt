@@ -21,7 +21,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
+import app.cameraroll.R
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -79,7 +81,7 @@ fun CameraRollRoot(vm: PhotosViewModel) {
                     putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
-                context.startActivity(Intent.createChooser(intent, "Compartir fotos"))
+                context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_photos_title)))
             }
         }
 
@@ -95,31 +97,31 @@ fun CameraRollRoot(vm: PhotosViewModel) {
                             selected = currentRoute == Routes.PHOTOS,
                             onClick = { nav.navigateTop(Routes.PHOTOS) },
                             icon = { Icon(Icons.Default.Image, contentDescription = null) },
-                            label = { Text("Fotos") },
+                            label = { Text(stringResource(R.string.nav_photos)) },
                         )
                         NavigationBarItem(
                             selected = currentRoute == Routes.SEARCH,
                             onClick = { nav.navigateTop(Routes.SEARCH) },
                             icon = { Icon(Icons.Default.Search, contentDescription = null) },
-                            label = { Text("Buscar") },
+                            label = { Text(stringResource(R.string.nav_search)) },
                         )
                         NavigationBarItem(
                             selected = currentRoute == Routes.ALBUMS,
                             onClick = { nav.navigateTop(Routes.ALBUMS) },
                             icon = { Icon(Icons.Default.PhotoAlbum, contentDescription = null) },
-                            label = { Text("Álbumes") },
+                            label = { Text(stringResource(R.string.nav_albums)) },
                         )
                         NavigationBarItem(
                             selected = currentRoute == Routes.FAVORITES,
                             onClick = { nav.navigateTop(Routes.FAVORITES) },
                             icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
-                            label = { Text("Favoritos") },
+                            label = { Text(stringResource(R.string.nav_favorites)) },
                         )
                         NavigationBarItem(
                             selected = currentRoute == Routes.SETTINGS,
                             onClick = { nav.navigateTop(Routes.SETTINGS) },
                             icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                            label = { Text("Ajustes") },
+                            label = { Text(stringResource(R.string.nav_settings)) },
                         )
                     }
                 }
@@ -213,7 +215,7 @@ private fun ViewerHost(
         }
         source.startsWith("memory-") -> {
             val yearsAgo = source.removePrefix("memory-").toIntOrNull() ?: 0
-            computeMemories(photos).firstOrNull { it.yearsAgo == yearsAgo }?.photos.orEmpty() to false
+            computeMemories(photos, LocalContext.current.resources).firstOrNull { it.yearsAgo == yearsAgo }?.photos.orEmpty() to false
         }
         else -> photos to false
     }

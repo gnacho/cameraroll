@@ -38,9 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import app.cameraroll.CameraRollApp
+import app.cameraroll.R
 import app.cameraroll.data.CloudProvider
 import app.cameraroll.ui.PhotosViewModel
 import java.text.SimpleDateFormat
@@ -69,7 +71,7 @@ fun SettingsScreen(vm: PhotosViewModel) {
 
     val showForm = editing || !cloud.isConfigured
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Ajustes") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.settings_title)) }) }) { padding ->
         Column(
             Modifier
                 .padding(padding)
@@ -82,10 +84,10 @@ fun SettingsScreen(vm: PhotosViewModel) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Cloud, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                         Spacer(Modifier.width(8.dp))
-                        Text("Tu nube: Nextcloud / OpenCloud", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.cloud_section_title), style = MaterialTheme.typography.titleMedium)
                     }
                     Text(
-                        "Nada de Google: tus fotos se guardan también en tu propio servidor por WebDAV.",
+                        stringResource(R.string.cloud_section_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
@@ -97,30 +99,30 @@ fun SettingsScreen(vm: PhotosViewModel) {
                                 selected = provider == CloudProvider.NEXTCLOUD,
                                 onClick = { provider = CloudProvider.NEXTCLOUD },
                                 shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-                            ) { Text("Nextcloud") }
+                            ) { Text(stringResource(R.string.provider_nextcloud)) }
                             SegmentedButton(
                                 selected = provider == CloudProvider.OPENCLOUD,
                                 onClick = { provider = CloudProvider.OPENCLOUD },
                                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-                            ) { Text("OpenCloud") }
+                            ) { Text(stringResource(R.string.provider_opencloud)) }
                         }
                         Spacer(Modifier.height(8.dp))
                         OutlinedTextField(
                             value = url, onValueChange = { url = it },
-                            label = { Text("URL del servidor") },
-                            placeholder = { Text("https://nube.ejemplo.com") },
+                            label = { Text(stringResource(R.string.field_server_url)) },
+                            placeholder = { Text(stringResource(R.string.field_server_url_placeholder)) },
                             singleLine = true, modifier = Modifier.fillMaxWidth(),
                         )
                         Spacer(Modifier.height(8.dp))
                         OutlinedTextField(
                             value = username, onValueChange = { username = it },
-                            label = { Text("Usuario") },
+                            label = { Text(stringResource(R.string.field_username)) },
                             singleLine = true, modifier = Modifier.fillMaxWidth(),
                         )
                         Spacer(Modifier.height(8.dp))
                         OutlinedTextField(
                             value = password, onValueChange = { password = it },
-                            label = { Text("Contraseña de aplicación") },
+                            label = { Text(stringResource(R.string.field_password)) },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
@@ -128,15 +130,15 @@ fun SettingsScreen(vm: PhotosViewModel) {
                         Spacer(Modifier.height(8.dp))
                         OutlinedTextField(
                             value = basePath, onValueChange = { basePath = it },
-                            label = { Text("Carpeta remota") },
-                            placeholder = { Text("/Fotos") },
+                            label = { Text(stringResource(R.string.field_remote_folder)) },
+                            placeholder = { Text(stringResource(R.string.field_remote_folder_placeholder)) },
                             singleLine = true, modifier = Modifier.fillMaxWidth(),
                         )
                         Spacer(Modifier.height(8.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Switch(checked = autoUpload, onCheckedChange = { autoUpload = it })
                             Spacer(Modifier.width(8.dp))
-                            Text("Subir automáticamente lo nuevo")
+                            Text(stringResource(R.string.auto_upload_label))
                         }
                         Spacer(Modifier.height(12.dp))
                         Row {
@@ -153,10 +155,10 @@ fun SettingsScreen(vm: PhotosViewModel) {
                                         ),
                                     )
                                     editing = false
-                                    Toast.makeText(context, "Configuración guardada", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.toast_settings_saved), Toast.LENGTH_SHORT).show()
                                 },
                                 enabled = url.isNotBlank() && username.isNotBlank() && password.isNotBlank(),
-                            ) { Text("Guardar") }
+                            ) { Text(stringResource(R.string.action_save)) }
                             Spacer(Modifier.width(8.dp))
                             OutlinedButton(
                                 onClick = {
@@ -168,35 +170,35 @@ fun SettingsScreen(vm: PhotosViewModel) {
                                         ),
                                     )
                                 },
-                            ) { Text("Probar") }
+                            ) { Text(stringResource(R.string.action_test)) }
                             if (cloud.isConfigured) {
                                 Spacer(Modifier.width(8.dp))
                                 TextButton(onClick = { vm.clearCloud() }) {
-                                    Text("Desvincular", color = MaterialTheme.colorScheme.error)
+                                    Text(stringResource(R.string.action_unlink), color = MaterialTheme.colorScheme.error)
                                 }
                             }
                         }
                         testResult?.let { r ->
                             Text(
-                                if (r.isSuccess) "✓ Conexión correcta" else "✗ ${r.exceptionOrNull()?.message}",
+                                if (r.isSuccess) stringResource(R.string.test_ok) else stringResource(R.string.test_fail, r.exceptionOrNull()?.message.orEmpty()),
                                 color = if (r.isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(top = 8.dp),
                             )
                         }
                     } else {
-                        SettingsRow("Proveedor", if (cloud.provider == CloudProvider.OPENCLOUD) "OpenCloud" else "Nextcloud")
-                        SettingsRow("Servidor", cloud.url)
-                        SettingsRow("Usuario", cloud.username)
-                        SettingsRow("Carpeta", cloud.basePath)
+                        SettingsRow(stringResource(R.string.row_provider), if (cloud.provider == CloudProvider.OPENCLOUD) stringResource(R.string.provider_opencloud) else stringResource(R.string.provider_nextcloud))
+                        SettingsRow(stringResource(R.string.row_server), cloud.url)
+                        SettingsRow(stringResource(R.string.field_username), cloud.username)
+                        SettingsRow(stringResource(R.string.row_folder), cloud.basePath)
                         SettingsRow(
-                            "Última sync",
+                            stringResource(R.string.row_last_sync),
                             if (cloud.lastSyncAt > 0)
-                                SimpleDateFormat("d MMM yyyy, HH:mm", Locale("es")).format(Date(cloud.lastSyncAt))
-                            else "Nunca",
+                                SimpleDateFormat(stringResource(R.string.date_viewer), Locale.getDefault()).format(Date(cloud.lastSyncAt))
+                            else stringResource(R.string.last_sync_never),
                         )
                         if (cloud.lastSyncSummary.isNotBlank()) {
-                            SettingsRow("Resultado", cloud.lastSyncSummary)
+                            SettingsRow(stringResource(R.string.row_result), cloud.lastSyncSummary)
                         }
                         Spacer(Modifier.height(12.dp))
                         Row {
@@ -208,15 +210,15 @@ fun SettingsScreen(vm: PhotosViewModel) {
                                     )
                                     Spacer(Modifier.width(8.dp))
                                 }
-                                Text("Sincronizar ahora")
+                                Text(stringResource(R.string.action_sync_now))
                             }
                             Spacer(Modifier.width(8.dp))
-                            OutlinedButton(onClick = { editing = true }) { Text("Editar") }
+                            OutlinedButton(onClick = { editing = true }) { Text(stringResource(R.string.action_edit)) }
                         }
                         syncResult?.let { r ->
                             Text(
-                                "Subidas: ${r.pushed} · Importadas: ${r.pulled}" +
-                                    if (r.errors.isNotEmpty()) " · ${r.errors.size} errores" else "",
+                                stringResource(R.string.sync_summary, r.pushed, r.pulled) +
+                                    if (r.errors.isNotEmpty()) stringResource(R.string.sync_errors, r.errors.size) else "",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(top = 8.dp),
@@ -231,14 +233,14 @@ fun SettingsScreen(vm: PhotosViewModel) {
             // ── Almacenamiento ───────────────────────────────────────────────
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Almacenamiento", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.storage_section_title), style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "${stats.total} elementos · ${formatBytes(stats.bytes)}",
+                        stringResource(R.string.storage_stats, stats.total, formatBytes(stats.bytes)),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
-                        "${stats.synced} copiados en tu nube · ${stats.trash} en la papelera",
+                        stringResource(R.string.storage_cloud_stats, stats.synced, stats.trash),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -253,10 +255,9 @@ fun SettingsScreen(vm: PhotosViewModel) {
             // ── Acerca de ────────────────────────────────────────────────────
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("CameraRoll", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Un clon de Google Fotos sin Google: cronología, recuerdos, álbumes, " +
-                            "favoritos y papelera, con copia de seguridad en tu Nextcloud u OpenCloud.",
+                        stringResource(R.string.about_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp),
@@ -296,9 +297,9 @@ private fun CrashReportCard() {
     val crash = remember { CameraRollApp.lastCrash(context) } ?: return
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
-            Text("Informe de fallos", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.crash_section_title), style = MaterialTheme.typography.titleMedium)
             Text(
-                "La última vez la app se cerró por un error. Cópiamelo y lo arreglo.",
+                stringResource(R.string.crash_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
@@ -311,11 +312,11 @@ private fun CrashReportCard() {
             )
             Row(Modifier.padding(top = 8.dp)) {
                 OutlinedButton(onClick = { CameraRollApp.copyCrash(context) }) {
-                    Text("Copiar informe")
+                    Text(stringResource(R.string.crash_copy))
                 }
                 Spacer(Modifier.width(8.dp))
                 TextButton(onClick = { CameraRollApp.clearCrash(context) }) {
-                    Text("Descartar")
+                    Text(stringResource(R.string.crash_dismiss))
                 }
             }
         }

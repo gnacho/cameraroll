@@ -1,7 +1,9 @@
 package app.cameraroll.webdav
 
 import android.util.Xml
+import app.cameraroll.R
 import app.cameraroll.data.CloudConfig
+import android.content.Context
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -27,7 +29,7 @@ data class DavEntry(
 class DavException(message: String, val status: Int = 0) : IOException(message)
 
 /** Cliente WebDAV mínimo (PROPFIND/PUT/GET/MKCOL/DELETE) para Nextcloud y OpenCloud. */
-class DavClient(private val config: CloudConfig) {
+class DavClient(private val config: CloudConfig, private val context: Context) {
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(20, TimeUnit.SECONDS)
@@ -47,7 +49,7 @@ class DavClient(private val config: CloudConfig) {
         }
 
     private fun checkOk(code: Int, op: String) {
-        if (code !in 200..299) throw DavException("$op falló (HTTP $code)", code)
+        if (code !in 200..299) throw DavException(context.getString(R.string.dav_error_http, op, code), code)
     }
 
     /** Lista recursiva bajo [path] (relativa al root de ficheros del usuario). */
@@ -136,7 +138,7 @@ class DavClient(private val config: CloudConfig) {
             client.newCall(req).execute().use { res ->
                 // 201 creada, 405 ya existe
                 if (res.code !in 200..299 && res.code != 405) {
-                    throw DavException("MKCOL $current falló (HTTP ${res.code})", res.code)
+                    throw DavException(context.getString(R.string.dav_error_mkcol, current, res.code), res.code)
                 }
             }
         }
@@ -145,24 +147,24 @@ class DavClient(private val config: CloudConfig) {
     fun upload(relPath: String, file: File, mime: String) {
         val body = file.asRequestBody(mime.toMediaType())
         val req = request(absUrl(relPath)).put(body).build()
-        client.newCall(req).execute().use { res -> checkOk(res.code, "Subida de $relPath") }
+        client.newCall(req).execute().use { res -> checkOk(res.code, context.getString(R.string.dav_op_upload, relPath)) }
     }
 
     fun download(relPath: String, dest: File) {
         val req = request(absUrl(relPath)).get().build()
         client.newCall(req).execute().use { res ->
-            checkOk(res.code, "Descarga de $relPath")
+            checkOk(res.code, context.getString(R.string.dav_op_download, relPath))
             dest.parentFile?.mkdirs()
             res.body?.byteStream()?.use { input ->
                 dest.outputStream().use { output -> input.copyTo(output) }
-            } ?: throw DavException("Respuesta vacía al descargar $relPath")
+            } ?: throw DavException(context.getString(R.string.dav_error_empty_download, relPath))
         }
     }
 
     fun delete(relPath: String) {
         val req = request(absUrl(relPath)).delete().build()
         client.newCall(req).execute().use { res ->
-            if (res.code != 404) checkOk(res.code, "Borrado de $relPath")
+            if (res.code != 404) checkOk(res.code, context.getString(R.string.dav_op_delete, relPath))
         }
     }
 
@@ -176,8 +178,8 @@ class DavClient(private val config: CloudConfig) {
         client.newCall(req).execute().use { res ->
             when (res.code) {
                 in 200..299 -> Unit
-                401, 403 -> throw DavException("Credenciales incorrectas (HTTP ${res.code})", res.code)
-                else -> throw DavException("El servidor respondió HTTP ${res.code}", res.code)
+                401, 403 -> throw DavException(context.getString(R.string.dav_error_bad_credentials, res.code), res.code)
+                else -> throw DavException(context.getString(R.string.dav_error_server, res.code), res.code)
             }
         }
     }

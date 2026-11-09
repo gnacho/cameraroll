@@ -34,6 +34,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import app.cameraroll.R
 import app.cameraroll.data.PhotoRepository
 import app.cameraroll.data.db.PhotoEntity
 import app.cameraroll.ui.MainActivity
@@ -93,7 +94,7 @@ private fun MemoriesContent(photos: List<PhotoEntity>) {
             .clickable(openApp),
     ) {
         Text(
-            text = "Recuerdos",
+            text = context.getString(R.string.widget_memories_title),
             style = TextStyle(
                 color = GlanceTheme.colors.onSurface,
                 fontSize = 16.sp,
@@ -107,7 +108,7 @@ private fun MemoriesContent(photos: List<PhotoEntity>) {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    "Añade fotos para revivir tus recuerdos",
+                    context.getString(R.string.widget_memories_empty),
                     style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 13.sp),
                 )
             }
@@ -139,7 +140,7 @@ private fun WidgetThumb(path: String?, modifier: GlanceModifier) {
             modifier = modifier
                 .fillMaxSize()
                 .cornerRadius(12.dp)
-                .background(ColorProvider(Color(0xFFE8F0FE))),
+                .background(ColorProvider(Color(0xFFCCE8E1))),
         ) {}
     }
 }

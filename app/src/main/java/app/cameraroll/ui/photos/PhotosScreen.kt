@@ -40,9 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import android.content.res.Resources
+import app.cameraroll.R
 import app.cameraroll.data.db.PhotoEntity
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.EmptyState
@@ -53,7 +57,7 @@ import java.util.Calendar
 
 data class Memory(val yearsAgo: Int, val label: String, val photos: List<PhotoEntity>)
 
-fun computeMemories(photos: List<PhotoEntity>): List<Memory> {
+fun computeMemories(photos: List<PhotoEntity>, resources: Resources): List<Memory> {
     val now = Calendar.getInstance()
     val memories = mutableListOf<Memory>()
     for (yearsAgo in 1..8) {
@@ -67,7 +71,7 @@ fun computeMemories(photos: List<PhotoEntity>): List<Memory> {
             memories.add(
                 Memory(
                     yearsAgo,
-                    if (yearsAgo == 1) "Hace 1 año" else "Hace $yearsAgo años",
+                    resources.getQuantityString(R.plurals.memory_years_ago, yearsAgo, yearsAgo),
                     matches.take(12),
                 ),
             )
@@ -90,7 +94,8 @@ fun PhotosScreen(
     val cloud by vm.cloud.collectAsState()
     var selected by remember { mutableStateOf(setOf<Long>()) }
     var showAlbumPicker by remember { mutableStateOf(false) }
-    val memories = remember(photos) { computeMemories(photos) }
+    val resources = LocalContext.current.resources
+    val memories = remember(photos) { computeMemories(photos, resources) }
 
     Scaffold(
         topBar = {
@@ -101,25 +106,25 @@ fun PhotosScreen(
                 ) {
                     IconButton(onClick = {
                         vm.setFavorite(selected.toList(), true); selected = emptySet()
-                    }) { Icon(Icons.Default.Favorite, contentDescription = "Favorito") }
+                    }) { Icon(Icons.Default.Favorite, contentDescription = stringResource(R.string.action_favorite)) }
                     IconButton(onClick = { showAlbumPicker = true }) {
-                        Icon(Icons.Default.Collections, contentDescription = "Añadir a álbum")
+                        Icon(Icons.Default.Collections, contentDescription = stringResource(R.string.action_add_to_album))
                     }
                     IconButton(onClick = {
                         onShare(photos.filter { selected.contains(it.id) }); selected = emptySet()
-                    }) { Icon(Icons.Default.Share, contentDescription = "Compartir") }
+                    }) { Icon(Icons.Default.Share, contentDescription = stringResource(R.string.action_share)) }
                     IconButton(onClick = {
                         vm.trash(selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.Delete, contentDescription = "Papelera") }
+                    }) { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_trash)) }
                 }
             } else {
                 TopAppBar(
-                    title = { Text("CameraRoll", fontWeight = FontWeight.Medium) },
+                    title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.Medium) },
                     actions = {
                         IconButton(onClick = onSettings) {
                             Icon(
                                 if (cloud.isConfigured) Icons.Default.CloudDone else Icons.Default.CloudOff,
-                                contentDescription = "Estado de la nube",
+                                contentDescription = stringResource(R.string.action_cloud_status),
                                 tint = if (cloud.isConfigured) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -133,7 +138,7 @@ fun PhotosScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onImport) {
-                Icon(Icons.Default.Add, contentDescription = "Añadir fotos")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add_photos))
             }
         },
     ) { padding ->
@@ -147,8 +152,8 @@ fun PhotosScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
-                title = "Tu biblioteca está vacía",
-                body = "Pulsa + para importar fotos y vídeos de tu dispositivo.",
+                title = stringResource(R.string.photos_empty_title),
+                body = stringResource(R.string.photos_empty_body),
             )
         } else {
             PhotoTimelineGrid(

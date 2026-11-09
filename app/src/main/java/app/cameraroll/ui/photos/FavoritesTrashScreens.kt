@@ -21,7 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.cameraroll.R
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.EmptyState
 import app.cameraroll.ui.components.PhotoTimelineGrid
@@ -39,13 +42,13 @@ fun FavoritesScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                 SelectionTopBar(count = selected.size, onClear = { selected = emptySet() }) {
                     IconButton(onClick = {
                         vm.setFavorite(selected.toList(), false); selected = emptySet()
-                    }) { Icon(Icons.Default.FavoriteBorder, contentDescription = "Quitar favorito") }
+                    }) { Icon(Icons.Default.FavoriteBorder, contentDescription = stringResource(R.string.action_remove_favorite)) }
                     IconButton(onClick = {
                         vm.trash(selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.Delete, contentDescription = "Papelera") }
+                    }) { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_trash)) }
                 }
             } else {
-                TopAppBar(title = { Text("Favoritos") })
+                TopAppBar(title = { Text(stringResource(R.string.favorites_title)) })
             }
         },
     ) { padding ->
@@ -58,8 +61,8 @@ fun FavoritesScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
-                title = "Sin favoritos",
-                body = "Marca fotos con el corazón para verlas aquí.",
+                title = stringResource(R.string.favorites_empty_title),
+                body = stringResource(R.string.favorites_empty_body),
             )
         } else {
             PhotoTimelineGrid(
@@ -93,18 +96,18 @@ fun TrashScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                 SelectionTopBar(count = selected.size, onClear = { selected = emptySet() }) {
                     IconButton(onClick = {
                         vm.restore(selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.Restore, contentDescription = "Restaurar") }
+                    }) { Icon(Icons.Default.Restore, contentDescription = stringResource(R.string.action_restore)) }
                     IconButton(onClick = {
                         vm.deleteForever(selected.toList()); selected = emptySet()
-                    }) { Icon(Icons.Default.DeleteForever, contentDescription = "Eliminar") }
+                    }) { Icon(Icons.Default.DeleteForever, contentDescription = stringResource(R.string.action_delete)) }
                 }
             } else {
                 TopAppBar(
-                    title = { Text("Papelera") },
+                    title = { Text(stringResource(R.string.trash_title)) },
                     actions = {
                         if (photos.isNotEmpty()) {
                             IconButton(onClick = { confirmEmpty = true }) {
-                                Icon(Icons.Default.DeleteForever, contentDescription = "Vaciar papelera")
+                                Icon(Icons.Default.DeleteForever, contentDescription = stringResource(R.string.action_empty_trash))
                             }
                         }
                     },
@@ -120,8 +123,8 @@ fun TrashScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
-                title = "Papelera vacía",
-                body = "Los elementos borrados se eliminan definitivamente a los 30 días.",
+                title = stringResource(R.string.trash_empty_title),
+                body = stringResource(R.string.trash_empty_body),
             )
         } else {
             PhotoTimelineGrid(
@@ -144,17 +147,17 @@ fun TrashScreen(vm: PhotosViewModel, onOpenPhoto: (Long, String) -> Unit) {
     if (confirmEmpty) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { confirmEmpty = false },
-            title = { Text("¿Vaciar la papelera?") },
-            text = { Text("Se eliminarán definitivamente ${photos.size} elementos.") },
+            title = { Text(stringResource(R.string.empty_trash_title)) },
+            text = { Text(pluralStringResource(R.plurals.empty_trash_body, photos.size, photos.size)) },
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = {
                     confirmEmpty = false
                     vm.emptyTrash()
-                }) { Text("Vaciar", color = MaterialTheme.colorScheme.error) }
+                }) { Text(stringResource(R.string.action_empty), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
                 androidx.compose.material3.TextButton(onClick = { confirmEmpty = false }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.action_cancel))
                 }
             },
         )

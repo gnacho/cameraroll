@@ -41,9 +41,9 @@ class CameraRollApp : Application() {
                 val sw = StringWriter()
                 error.printStackTrace(PrintWriter(sw))
                 val report = buildString {
-                    appendLine("CameraRoll - informe de fallo")
-                    appendLine("Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}) · ${Build.MODEL}")
-                    appendLine("Hilo: ${thread.name}")
+                    appendLine(getString(R.string.crash_report_title))
+                    appendLine(getString(R.string.crash_report_device, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.MODEL))
+                    appendLine(getString(R.string.crash_report_thread, thread.name))
                     appendLine()
                     append(sw.toString())
                 }
@@ -71,7 +71,7 @@ class CameraRollApp : Application() {
             val text = lastCrash(context) ?: return
             val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(ClipData.newPlainText("crash", text))
-            Toast.makeText(context, "Informe copiado al portapapeles", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.toast_report_copied), Toast.LENGTH_SHORT).show()
         }
     }
 }
