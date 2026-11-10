@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -14,12 +17,20 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
@@ -43,6 +54,7 @@ import app.cameraroll.ui.search.SearchScreen
 import app.cameraroll.ui.settings.SettingsScreen
 import app.cameraroll.ui.theme.CameraRollTheme
 import java.io.File
+import kotlinx.coroutines.launch
 
 object Routes {
     const val PHOTOS = "photos"
@@ -55,6 +67,20 @@ object Routes {
     const val VIEWER = "viewer/{photoId}/{source}"
 }
 
+private data class NavDestination(val route: String, val label: Int, val icon: ImageVector)
+
+private val navDestinations = listOf(
+    NavDestination(Routes.PHOTOS, R.string.nav_photos, Icons.Default.Image),
+    NavDestination(Routes.SEARCH, R.string.nav_search, Icons.Default.Search),
+    NavDestination(Routes.ALBUMS, R.string.nav_albums, Icons.Default.PhotoAlbum),
+    NavDestination(Routes.FAVORITES, R.string.nav_favorites, Icons.Default.Favorite),
+    NavDestination(Routes.SETTINGS, R.string.nav_settings, Icons.Default.Settings),
+)
+
+private val topLevelRoutes = setOf(
+    Routes.PHOTOS, Routes.SEARCH, Routes.ALBUMS, Routes.FAVORITES, Routes.SETTINGS,
+)
+
 @Composable
 fun CameraRollRoot(vm: PhotosViewModel) {
     CameraRollTheme {
@@ -62,6 +88,12 @@ fun CameraRollRoot(vm: PhotosViewModel) {
         val backStack by nav.currentBackStackEntryAsState()
         val currentRoute = backStack?.destination?.route
         val context = LocalContext.current
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+        val showMessage: (String) -> Unit = { msg ->
+            scope.launch { snackbarHostState.showSnackbar(msg) }
+        }
+        val expanded = LocalConfiguration.current.screenWidthDp >= 600
 
         val picker = rememberLauncherForActivityResult(
             ActivityResultContracts.PickMultipleVisualMedia(maxItems = 50),
@@ -85,106 +117,114 @@ fun CameraRollRoot(vm: PhotosViewModel) {
             }
         }
 
-        val showBottomBar = currentRoute in setOf(
-            Routes.PHOTOS, Routes.SEARCH, Routes.ALBUMS, Routes.FAVORITES, Routes.SETTINGS,
-        )
+        val showNav = currentRoute in topLevelRoutes
 
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
-                if (showBottomBar) {
-                    NavigationBar {
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.PHOTOS,
-                            onClick = { nav.navigateTop(Routes.PHOTOS) },
-                            icon = { Icon(Icons.Default.Image, contentDescription = null) },
-                            label = { Text(stringResource(R.string.nav_photos)) },
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.SEARCH,
-                            onClick = { nav.navigateTop(Routes.SEARCH) },
-                            icon = { Icon(Icons.Default.Search, contentDescription = null) },
-                            label = { Text(stringResource(R.string.nav_search)) },
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.ALBUMS,
-                            onClick = { nav.navigateTop(Routes.ALBUMS) },
-                            icon = { Icon(Icons.Default.PhotoAlbum, contentDescription = null) },
-                            label = { Text(stringResource(R.string.nav_albums)) },
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.FAVORITES,
-                            onClick = { nav.navigateTop(Routes.FAVORITES) },
-                            icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
-                            label = { Text(stringResource(R.string.nav_favorites)) },
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.SETTINGS,
-                            onClick = { nav.navigateTop(Routes.SETTINGS) },
-                            icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                            label = { Text(stringResource(R.string.nav_settings)) },
-                        )
-                    }
+                if (showNav && !expanded) {
+                    AppNavigationBar(currentRoute = currentRoute, onNavigate = nav::navigateTop)
                 }
             },
         ) { padding ->
-            NavHost(
-                navController = nav,
-                startDestination = Routes.PHOTOS,
-                modifier = Modifier.padding(padding),
-            ) {
-                composable(Routes.PHOTOS) {
-                    PhotosScreen(
-                        vm = vm,
-                        onOpenPhoto = { id, source -> nav.navigate("viewer/$id/$source") },
-                        onImport = {
-                            picker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo),
-                            )
-                        },
-                        onShare = share,
-                        onSettings = { nav.navigate(Routes.SETTINGS) },
-                    )
+            Row(Modifier.padding(padding).fillMaxSize()) {
+                if (showNav && expanded) {
+                    AppNavigationRail(currentRoute = currentRoute, onNavigate = nav::navigateTop)
                 }
-                composable(Routes.SEARCH) {
-                    SearchScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
-                }
-                composable(Routes.ALBUMS) {
-                    AlbumsScreen(vm) { id -> nav.navigate("album/$id") }
-                }
-                composable(
-                    Routes.ALBUM_DETAIL,
-                    arguments = listOf(navArgument("albumId") { type = NavType.LongType }),
-                ) { entry ->
-                    val albumId = entry.arguments?.getLong("albumId") ?: 0L
-                    AlbumDetailScreen(
-                        vm = vm,
-                        albumId = albumId,
-                        onBack = { nav.popBackStack() },
-                        onOpenPhoto = { id, source -> nav.navigate("viewer/$id/$source") },
-                        onAddPhotos = { nav.navigateTop(Routes.PHOTOS) },
-                    )
-                }
-                composable(Routes.FAVORITES) {
-                    FavoritesScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
-                }
-                composable(Routes.TRASH) {
-                    TrashScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
-                }
-                composable(Routes.SETTINGS) {
-                    SettingsScreen(vm)
-                }
-                composable(
-                    Routes.VIEWER,
-                    arguments = listOf(
-                        navArgument("photoId") { type = NavType.LongType },
-                        navArgument("source") { type = NavType.StringType },
-                    ),
-                ) { entry ->
-                    val photoId = entry.arguments?.getLong("photoId") ?: 0L
-                    val source = entry.arguments?.getString("source") ?: "photos"
-                    ViewerHost(vm, photoId, source, onBack = { nav.popBackStack() }, onShare = share)
+                NavHost(
+                    navController = nav,
+                    startDestination = Routes.PHOTOS,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    composable(Routes.PHOTOS) {
+                        PhotosScreen(
+                            vm = vm,
+                            onOpenPhoto = { id, source -> nav.navigate("viewer/$id/$source") },
+                            onImport = {
+                                picker.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo),
+                                )
+                            },
+                            onShare = share,
+                            onSettings = { nav.navigate(Routes.SETTINGS) },
+                        )
+                    }
+                    composable(Routes.SEARCH) {
+                        SearchScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
+                    }
+                    composable(Routes.ALBUMS) {
+                        AlbumsScreen(vm) { id -> nav.navigate("album/$id") }
+                    }
+                    composable(
+                        Routes.ALBUM_DETAIL,
+                        arguments = listOf(navArgument("albumId") { type = NavType.LongType }),
+                    ) { entry ->
+                        val albumId = entry.arguments?.getLong("albumId") ?: 0L
+                        AlbumDetailScreen(
+                            vm = vm,
+                            albumId = albumId,
+                            onBack = { nav.popBackStack() },
+                            onOpenPhoto = { id, source -> nav.navigate("viewer/$id/$source") },
+                            onAddPhotos = { nav.navigateTop(Routes.PHOTOS) },
+                        )
+                    }
+                    composable(Routes.FAVORITES) {
+                        FavoritesScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
+                    }
+                    composable(Routes.TRASH) {
+                        TrashScreen(vm) { id, source -> nav.navigate("viewer/$id/$source") }
+                    }
+                    composable(Routes.SETTINGS) {
+                        SettingsScreen(vm, onShowMessage = showMessage)
+                    }
+                    composable(
+                        Routes.VIEWER,
+                        arguments = listOf(
+                            navArgument("photoId") { type = NavType.LongType },
+                            navArgument("source") { type = NavType.StringType },
+                        ),
+                    ) { entry ->
+                        val photoId = entry.arguments?.getLong("photoId") ?: 0L
+                        val source = entry.arguments?.getString("source") ?: "photos"
+                        ViewerHost(
+                            vm = vm,
+                            photoId = photoId,
+                            source = source,
+                            onBack = { nav.popBackStack() },
+                            onShare = share,
+                            onShowMessage = showMessage,
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun AppNavigationBar(currentRoute: String?, onNavigate: (String) -> Unit) {
+    NavigationBar {
+        navDestinations.forEach { d ->
+            NavigationBarItem(
+                selected = currentRoute == d.route,
+                onClick = { onNavigate(d.route) },
+                icon = { Icon(d.icon, contentDescription = null) },
+                label = { Text(stringResource(d.label)) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun AppNavigationRail(currentRoute: String?, onNavigate: (String) -> Unit) {
+    NavigationRail(modifier = Modifier.fillMaxHeight()) {
+        navDestinations.forEach { d ->
+            NavigationRailItem(
+                selected = currentRoute == d.route,
+                onClick = { onNavigate(d.route) },
+                icon = { Icon(d.icon, contentDescription = null) },
+                label = { Text(stringResource(d.label)) },
+            )
         }
     }
 }
@@ -197,6 +237,7 @@ private fun ViewerHost(
     source: String,
     onBack: () -> Unit,
     onShare: (List<PhotoEntity>) -> Unit,
+    onShowMessage: (String) -> Unit,
 ) {
     val photos by vm.photos.collectAsState()
     val favorites by vm.favorites.collectAsState()
@@ -227,6 +268,7 @@ private fun ViewerHost(
         isTrash = isTrash,
         onBack = onBack,
         onShare = onShare,
+        onShowMessage = onShowMessage,
     )
 }
 

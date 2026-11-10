@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
-import android.widget.Toast
 import app.cameraroll.data.CloudSettings
 import app.cameraroll.data.PhotoRepository
 import app.cameraroll.sync.SyncWorker
@@ -67,11 +66,11 @@ class CameraRollApp : Application() {
                 .edit().remove("last").apply()
         }
 
-        fun copyCrash(context: Context) {
-            val text = lastCrash(context) ?: return
+        fun copyCrash(context: Context): Boolean {
+            val text = lastCrash(context) ?: return false
             val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(ClipData.newPlainText("crash", text))
-            Toast.makeText(context, context.getString(R.string.toast_report_copied), Toast.LENGTH_SHORT).show()
+            return true
         }
     }
 }

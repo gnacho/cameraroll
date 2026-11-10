@@ -1,6 +1,5 @@
 package app.cameraroll.ui.settings
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,7 +51,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(vm: PhotosViewModel) {
+fun SettingsScreen(vm: PhotosViewModel, onShowMessage: (String) -> Unit) {
     val cloud by vm.cloud.collectAsState()
     val stats by vm.stats.collectAsState()
     val syncing by vm.syncing.collectAsState()
@@ -157,7 +156,7 @@ fun SettingsScreen(vm: PhotosViewModel) {
                                         ),
                                     )
                                     editing = false
-                                    Toast.makeText(context, context.getString(R.string.toast_settings_saved), Toast.LENGTH_SHORT).show()
+                                    onShowMessage(context.getString(R.string.toast_settings_saved))
                                 },
                                 enabled = url.isNotBlank() && username.isNotBlank() && password.isNotBlank(),
                             ) { Text(stringResource(R.string.action_save)) }
@@ -252,7 +251,7 @@ fun SettingsScreen(vm: PhotosViewModel) {
             Spacer(Modifier.height(16.dp))
 
             // ── Informe de fallos ────────────────────────────────────────────
-            CrashReportCard()
+            CrashReportCard(onShowMessage)
 
             // ── Acerca de ────────────────────────────────────────────────────
             Card(Modifier.fillMaxWidth()) {
@@ -294,7 +293,7 @@ private fun formatBytes(bytes: Long): String {
 
 
 @Composable
-private fun CrashReportCard() {
+private fun CrashReportCard(onShowMessage: (String) -> Unit) {
     val context = LocalContext.current
     val crash = remember { CameraRollApp.lastCrash(context) } ?: return
     Card(Modifier.fillMaxWidth()) {
@@ -313,7 +312,11 @@ private fun CrashReportCard() {
                 modifier = Modifier.padding(top = 8.dp),
             )
             Row(Modifier.padding(top = 8.dp)) {
-                OutlinedButton(onClick = { CameraRollApp.copyCrash(context) }) {
+                OutlinedButton(onClick = {
+                    if (CameraRollApp.copyCrash(context)) {
+                        onShowMessage(context.getString(R.string.toast_report_copied))
+                    }
+                }) {
                     Text(stringResource(R.string.crash_copy))
                 }
                 Spacer(Modifier.width(8.dp))

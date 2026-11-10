@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -258,7 +259,7 @@ fun SelectionTopBar(
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
         ) {
             androidx.compose.material3.IconButton(onClick = onClear) {
-                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_cancel_selection))
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel_selection))
             }
             Text(
                 pluralStringResource(R.plurals.selected_count, count, count),

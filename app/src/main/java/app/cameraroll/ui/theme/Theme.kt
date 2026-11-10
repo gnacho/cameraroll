@@ -7,6 +7,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/** Rojo del corazón de favorito (marca propia; no es el rol `error`). */
+val FavoriteRed = Color(0xFFFF5252)
+
 private val LightColors = lightColorScheme(
     primary = Color(0xFF006A60),
     onPrimary = Color(0xFFFFFFFF),

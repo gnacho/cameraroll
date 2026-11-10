@@ -1,7 +1,6 @@
 package app.cameraroll.ui.photos
 
 import android.widget.MediaController
-import android.widget.Toast
 import android.widget.VideoView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -60,6 +59,7 @@ import app.cameraroll.R
 import app.cameraroll.data.db.PhotoEntity
 import app.cameraroll.ui.PhotosViewModel
 import app.cameraroll.ui.components.formatDuration
+import app.cameraroll.ui.theme.FavoriteRed
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,6 +74,7 @@ fun ViewerScreen(
     isTrash: Boolean,
     onBack: () -> Unit,
     onShare: (List<PhotoEntity>) -> Unit,
+    onShowMessage: (String) -> Unit,
 ) {
     if (photos.isEmpty()) {
         Box(Modifier.fillMaxSize().background(Color.Black)) {
@@ -149,7 +150,7 @@ fun ViewerScreen(
                             Icon(
                                 if (current.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = stringResource(R.string.action_favorite),
-                                tint = if (current.isFavorite) Color(0xFFFF5252) else Color.White,
+                                tint = if (current.isFavorite) FavoriteRed else Color.White,
                             )
                         }
                         IconButton(onClick = { onShare(listOf(current)) }) {
@@ -157,7 +158,7 @@ fun ViewerScreen(
                         }
                         IconButton(onClick = {
                             vm.trash(listOf(current.id))
-                            Toast.makeText(context, context.getString(R.string.toast_moved_to_trash), Toast.LENGTH_SHORT).show()
+                            onShowMessage(context.getString(R.string.toast_moved_to_trash))
                             if (photos.size <= 1) onBack()
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_trash), tint = Color.White)
@@ -165,7 +166,7 @@ fun ViewerScreen(
                     } else {
                         IconButton(onClick = {
                             vm.restore(listOf(current.id))
-                            Toast.makeText(context, context.getString(R.string.toast_restored), Toast.LENGTH_SHORT).show()
+                            onShowMessage(context.getString(R.string.toast_restored))
                             onBack()
                         }) {
                             Icon(Icons.Default.Restore, contentDescription = stringResource(R.string.action_restore), tint = Color.White)
