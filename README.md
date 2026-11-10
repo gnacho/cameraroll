@@ -26,6 +26,8 @@ or OpenCloud server over WebDAV.
   - Periodic sync every 6 hours with WorkManager (foreground service), plus a
     "Sync now" button and "Test connection".
 - Light and dark theme following the system (Material 3).
+- Localized in Spanish and English.
+- Adaptive navigation: bottom bar on phones, rail on tablets and foldables.
 
 ## Build
 
