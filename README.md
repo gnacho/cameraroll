@@ -1,13 +1,14 @@
 # CameraRoll
 
+![Version](https://img.shields.io/badge/version-1.0.0-0F766E)
+
 A native, self-hosted photo gallery for Android, written in Kotlin with
 Jetpack Compose. No cloud lock-in: backups and sync go to your own Nextcloud
 or OpenCloud server over WebDAV.
 
 ## Features
 
-- Timeline of photos and videos grouped by day ("Today", "Yesterday", dates
-  in Spanish).
+- Timeline of photos and videos grouped by day ("Today", "Yesterday", dates).
 - Memories: strips of photos from this same day in previous years.
 - Fullscreen viewer with a pager, looping video, and an info panel (date,
   size, dimensions, duration, cloud backup state).
@@ -28,6 +29,10 @@ or OpenCloud server over WebDAV.
 - Light and dark theme following the system (Material 3).
 - Localized in Spanish and English.
 - Adaptive navigation: bottom bar on phones, rail on tablets and foldables.
+
+## Download
+
+Signed APKs are attached to each [release](https://github.com/gnacho/cameraroll/releases).
 
 ## Build
 
